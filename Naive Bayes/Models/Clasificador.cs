@@ -12,6 +12,7 @@ namespace Naive_Bayes.Models
         public string tipo { get; set; }
         public Dictionary<string, int> contador { get; set; }
         public int totalPalabras { get; set; }
+        public int totalTuits { get; set; }
         private char[] caracteresInvalidos = { '-', '*', '+', '.' };
         /// <summary>
         /// 
@@ -31,6 +32,7 @@ namespace Naive_Bayes.Models
         {
             foreach (Tuit tuit in tuits)
             {
+                this.totalTuits++;
                 foreach (string palabra in tuit.contenido.ToLower().Split(' '))
                 {
                     if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))

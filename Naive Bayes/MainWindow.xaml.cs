@@ -24,9 +24,11 @@ namespace Naive_Bayes
     /// </summary>
     public partial class MainWindow : Window
     {
-        TuitsList tuits = new TuitsList();
-        Clasificador clasPositivo = new Clasificador("positivo");
-        Clasificador clasNegativo = new Clasificador("negativo");
+        private TuitsList tuits = new TuitsList();
+        private Clasificador clasPositivo = new Clasificador("positivo");
+        private Clasificador clasNegativo = new Clasificador("negativo");
+        private int totalPalabras { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -51,6 +53,7 @@ namespace Naive_Bayes
             }
             this.clasPositivo.contarPalabras(this.tuits);
             this.clasNegativo.contarPalabras(this.tuits);
+            this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras + 1;
             //this.quitarDupicados();
         }
 
@@ -69,8 +72,14 @@ namespace Naive_Bayes
             Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador);
             Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador);
 
+            //Positivos
+            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo, Positivos);
+            this.lblPositivo.Content = probabilidadPositiva;
+            //Negativos
+            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo, Negativos);
+            this.lblNegativo.Content = probabilidadNegativa;
         }
-        private Dictionary<string, int> ObtenerValores(Dictionary< string,int> clasificacion)
+        private Dictionary<string, int> ObtenerValores(Dictionary<string, int> clasificacion)
         {
             Dictionary<string, int> valores = new Dictionary<string, int>();
             //Positivos
@@ -89,6 +98,16 @@ namespace Naive_Bayes
                 }
             }
             return valores;
+        }
+
+        private double ObtenerProbabilidades(Clasificador clas, Dictionary<string, int> Casos)
+        {
+            double probabilidad = (clas.totalPalabras / this.totalPalabras);
+            foreach (string palabra in Casos.Keys)
+            {
+                probabilidad *= Math.Pow((clas.contador[palabra] + 1) / (clas.totalPalabras + this.totalPalabras), Casos[palabra]);
+            }
+            return probabilidad;
         }
     }
 }
