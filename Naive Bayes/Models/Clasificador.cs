@@ -35,12 +35,13 @@ namespace Naive_Bayes.Models
                 {
                     if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
                     {
+                        this.totalPalabras++;
                         string word = this.laContiene(palabra.ToLower().Trim());
                         if (word.Length == 0)
                             continue;
                         word = this.corregirPalabra(word);
                         if (this.contador.ContainsKey(word))
-                            this.contador[word] += 1;
+                            this.contador[word]++;
                         else
                         {
                             this.contador.Add(word, 1);
@@ -48,7 +49,6 @@ namespace Naive_Bayes.Models
                     }
                 }
             }
-            this.totalPalabras = tuits.Count;
         }
         /// <summary>
         /// 

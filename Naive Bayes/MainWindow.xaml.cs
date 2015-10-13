@@ -32,7 +32,7 @@ namespace Naive_Bayes
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void btnEntrenar_Click(object sender, RoutedEventArgs e)
         {
             this.tuits.Clear();
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
@@ -50,7 +50,45 @@ namespace Naive_Bayes
                 }
             }
             this.clasPositivo.contarPalabras(this.tuits);
-            this.clasPositivo.contarPalabras(this.tuits);
+            this.clasNegativo.contarPalabras(this.tuits);
+            //this.quitarDupicados();
+        }
+
+        private void quitarDupicados()
+        {
+            Dictionary<string, int> auxP = new Dictionary<string, int>(this.clasPositivo.contador);
+            foreach (string val in auxP.Keys)
+                if (this.clasNegativo.contador.Remove(val))
+                    this.clasPositivo.contador.Remove(val);
+            this.clasPositivo.totalPalabras = this.clasPositivo.contador.Count + this.clasNegativo.contador.Count;
+            this.clasNegativo.totalPalabras = this.clasPositivo.totalPalabras;
+        }
+
+        private void btnClasificar_Click(object sender, RoutedEventArgs e)
+        {
+            Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador);
+            Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador);
+
+        }
+        private Dictionary<string, int> ObtenerValores(Dictionary< string,int> clasificacion)
+        {
+            Dictionary<string, int> valores = new Dictionary<string, int>();
+            //Positivos
+            foreach (string palabra in clasificacion.Keys)
+            {
+                if (this.txtTuit.Text.Contains(palabra))
+                {
+                    if (valores.ContainsKey(palabra))
+                    {
+                        valores[palabra]++;
+                    }
+                    else
+                    {
+                        valores.Add(palabra, 1);
+                    }
+                }
+            }
+            return valores;
         }
     }
 }
