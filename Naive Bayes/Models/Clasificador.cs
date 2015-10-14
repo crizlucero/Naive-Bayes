@@ -13,7 +13,7 @@ namespace Naive_Bayes.Models
         public Dictionary<string, int> contador { get; set; }
         public int totalPalabras { get; set; }
         public int totalTuits { get; set; }
-        private char[] caracteresInvalidos = { '-', '*', '+', '.' };
+        private char[] caracteresInvalidos = { '-', '*', '+', '.', ',' };
         /// <summary>
         /// 
         /// </summary>

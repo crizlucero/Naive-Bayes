@@ -73,11 +73,12 @@ namespace Naive_Bayes
             Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador);
 
             //Positivos
-            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo, Positivos);
+            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo);//, Positivos);
             this.lblPositivo.Content = probabilidadPositiva;
             //Negativos
-            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo, Negativos);
+            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo);//, Negativos);
             this.lblNegativo.Content = probabilidadNegativa;
+            this.lblSeleccion.Content = probabilidadPositiva > probabilidadNegativa ? "Positivo" : "Negativo";
         }
         private Dictionary<string, int> ObtenerValores(Dictionary<string, int> clasificacion)
         {
@@ -85,7 +86,7 @@ namespace Naive_Bayes
             //Positivos
             foreach (string palabra in clasificacion.Keys)
             {
-                if (this.txtTuit.Text.Contains(palabra))
+                if (this.ContienePalabra(this.txtTuit.Text, palabra))
                 {
                     if (valores.ContainsKey(palabra))
                     {
@@ -100,14 +101,27 @@ namespace Naive_Bayes
             return valores;
         }
 
-        private double ObtenerProbabilidades(Clasificador clas, Dictionary<string, int> Casos)
+        private double ObtenerProbabilidades(Clasificador clas)
         {
-            double probabilidad = (clas.totalPalabras / this.totalPalabras);
-            foreach (string palabra in Casos.Keys)
+            double probabilidad = (Convert.ToDouble(clas.totalPalabras) / Convert.ToDouble(this.totalPalabras));
+            foreach (string palabra in this.txtTuit.Text.Split(' '))
             {
-                probabilidad *= Math.Pow((clas.contador[palabra] + 1) / (clas.totalPalabras + this.totalPalabras), Casos[palabra]);
+                if (clas.contador.ContainsKey(palabra))
+                    probabilidad *= Convert.ToDouble((clas.contador[palabra] + 1)) / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
+                else
+                    probabilidad *= 1.0 / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
             }
             return probabilidad;
+        }
+
+        private bool ContienePalabra(string texto, string palabra)
+        {
+            foreach (string frag in texto.Split(' '))
+            {
+                if (frag == palabra)
+                    return true;
+            }
+            return false;
         }
     }
 }

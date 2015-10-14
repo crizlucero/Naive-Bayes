@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Naive_Bayes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="270">
+        Title="MainWindow" Height="240" Width="374">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
@@ -25,5 +26,6 @@
         <Label Name="lblPositivo" Grid.Row="2" Grid.Column="1"/>
         <Label Content="Clasificación Negativo:" Grid.Row="3"/>
         <Label Name="lblNegativo" Grid.Row="3" Grid.Column="1"/>
+        <Label Name="lblSeleccion" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </Window>
