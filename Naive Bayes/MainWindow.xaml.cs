@@ -32,16 +32,19 @@ namespace Naive_Bayes
         public MainWindow()
         {
             InitializeComponent();
+            this.Entrenar();
         }
 
         private void btnEntrenar_Click(object sender, RoutedEventArgs e)
         {
+            this.Entrenar();
+        }
+        private void Entrenar(){
+            int count = 0;
             this.tuits.Clear();
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
             foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
-            {
                 for (int i = 1; i < ws.Rows.Length; i++)
-                {
                     this.tuits.Add(new Tuit()
                     {
                         contenido = ws.Rows[i].Cells[0].Text,
@@ -49,14 +52,23 @@ namespace Naive_Bayes
                         negativo = ws.Rows[i].Cells[2].Text,
                         empresa = ws.Rows[i].Cells[3].Text
                     });
+            foreach (Tuit tuit in this.tuits)
+            {
+                if (count % 13 == 0)
+                {
+                    this.clasPositivo.contarPalabras(tuit);
+                    this.clasNegativo.contarPalabras(tuit);
                 }
+                count++;
             }
-            this.clasPositivo.contarPalabras(this.tuits);
-            this.clasNegativo.contarPalabras(this.tuits);
-            this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras + 1;
+            //this.clasPositivo.contarPalabras(this.tuits);
+            //this.clasNegativo.contarPalabras(this.tuits);
+            this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras;
             //this.quitarDupicados();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void quitarDupicados()
         {
             Dictionary<string, int> auxP = new Dictionary<string, int>(this.clasPositivo.contador);
@@ -104,10 +116,12 @@ namespace Naive_Bayes
         private double ObtenerProbabilidades(Clasificador clas)
         {
             double probabilidad = (Convert.ToDouble(clas.totalPalabras) / Convert.ToDouble(this.totalPalabras));
-            foreach (string palabra in this.txtTuit.Text.Split(' '))
+            string word = "";
+            foreach (string palabra in this.txtTuit.Text.Trim().Split(' '))
             {
-                if (clas.contador.ContainsKey(palabra))
-                    probabilidad *= Convert.ToDouble((clas.contador[palabra] + 1)) / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
+                word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
+                if (clas.contador.ContainsKey(word))
+                    probabilidad *= Convert.ToDouble((clas.contador[word] + 1)) / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
                 else
                     probabilidad *= 1.0 / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
             }

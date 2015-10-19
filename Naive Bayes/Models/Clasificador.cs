@@ -13,7 +13,6 @@ namespace Naive_Bayes.Models
         public Dictionary<string, int> contador { get; set; }
         public int totalPalabras { get; set; }
         public int totalTuits { get; set; }
-        private char[] caracteresInvalidos = { '-', '*', '+', '.', ',' };
         /// <summary>
         /// 
         /// </summary>
@@ -28,36 +27,36 @@ namespace Naive_Bayes.Models
         /// 
         /// </summary>
         /// <param name="tuits"></param>
-        public void contarPalabras(TuitsList tuits)
+        public void contarPalabras(Tuit tuit)
         {
-            foreach (Tuit tuit in tuits)
+            //foreach (Tuit tuit in tuits)
+            //{
+            this.totalTuits++;
+            foreach (string palabra in tuit.contenido.ToLower().Split(' '))
             {
-                this.totalTuits++;
-                foreach (string palabra in tuit.contenido.ToLower().Split(' '))
+                if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
                 {
-                    if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
+                    this.totalPalabras++;
+                    string word = laContiene(palabra.ToLower().Trim());
+                    if (word.Length == 0)
+                        continue;
+                    word = corregirPalabra(word);
+                    if (this.contador.ContainsKey(word))
+                        this.contador[word]++;
+                    else
                     {
-                        this.totalPalabras++;
-                        string word = this.laContiene(palabra.ToLower().Trim());
-                        if (word.Length == 0)
-                            continue;
-                        word = this.corregirPalabra(word);
-                        if (this.contador.ContainsKey(word))
-                            this.contador[word]++;
-                        else
-                        {
-                            this.contador.Add(word, 1);
-                        }
+                        this.contador.Add(word, 1);
                     }
                 }
             }
+            //}
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="palabra"></param>
         /// <returns></returns>
-        private string corregirPalabra(string palabra)
+        public static string corregirPalabra(string palabra)
         {
             int toEnd = palabra.Length;
             for (int i = 0; i < toEnd - 1; i++)
@@ -67,7 +66,7 @@ namespace Naive_Bayes.Models
                     i++;
                     switch (palabra[i])
                     {
-                        case 'n': palabra = palabra.Replace("\'n", "ñ"); i = -1; toEnd = palabra.Length; break;
+                        case 'n': palabra = palabra.Replace("\'n", "n"); i = -1; toEnd = palabra.Length; break;
                         case 'a': palabra = palabra.Replace("\'a", "a"); i = -1; toEnd = palabra.Length; break;
                         case 'e': palabra = palabra.Replace("\'e", "e"); i = -1; toEnd = palabra.Length; break;
                         case 'i': palabra = palabra.Replace("\'i", "i"); i = -1; toEnd = palabra.Length; break;
@@ -93,9 +92,10 @@ namespace Naive_Bayes.Models
         /// </summary>
         /// <param name="palabra"></param>
         /// <returns></returns>
-        private string laContiene(string palabra)
+        public static string laContiene(string palabra)
         {
-            foreach (char caracter in this.caracteresInvalidos)
+            char[] caracteresInvalidos = { '-', '*', '+', '.', ',', '!', ')', ':', '(', '"', ';' };
+            foreach (char caracter in caracteresInvalidos)
                 if (palabra.Contains(caracter))
                     palabra = palabra.Replace(caracter.ToString(), "");
             return palabra;
