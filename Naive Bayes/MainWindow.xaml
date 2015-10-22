@@ -18,7 +18,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Button Content="Entrenar" Width="75" Height="25" Name="btnEntrenar" Click="btnEntrenar_Click"/>
+        <Button Content="Convertir a .arff" Width="95" Height="25" Name="btnConvertir" Click="btnConvertir_Click"/>
         <Button Content="Clasificar" Width="75" Height="25" Grid.Column="1" Name="btnClasificar" Click="btnClasificar_Click"/>
         <Label Content="Tuit" Grid.Row="1"/>
         <TextBox Name="txtTuit" Grid.Column="1" Grid.Row="1" Margin="5"/>

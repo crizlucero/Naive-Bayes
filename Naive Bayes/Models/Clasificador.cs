@@ -32,21 +32,20 @@ namespace Naive_Bayes.Models
             //foreach (Tuit tuit in tuits)
             //{
             this.totalTuits++;
+            //tuit.contenido = QuitarDeterminantes(tuit.contenido.ToLower());
             foreach (string palabra in tuit.contenido.ToLower().Split(' '))
             {
                 if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
                 {
                     this.totalPalabras++;
-                    string word = laContiene(palabra.ToLower().Trim());
+                    string word = laContiene(palabra.Trim());
                     if (word.Length == 0)
                         continue;
                     word = corregirPalabra(word);
                     if (this.contador.ContainsKey(word))
                         this.contador[word]++;
                     else
-                    {
                         this.contador.Add(word, 1);
-                    }
                 }
             }
             //}
@@ -73,7 +72,19 @@ namespace Naive_Bayes.Models
                         case 'o': palabra = palabra.Replace("\'o", "o"); i = -1; toEnd = palabra.Length; break;
                         case 'u': palabra = palabra.Replace("\'u", "u"); i = -1; toEnd = palabra.Length; break;
                     }
+                }else if(palabra[i] == '\"' && i < toEnd - 1)
+                {
+                    i++;
+                    switch (palabra[i])
+                    {
+                        case 'a': palabra = palabra.Replace("\"a", "a"); i = -1; toEnd = palabra.Length; break;
+                        case 'e': palabra = palabra.Replace("\"e", "e"); i = -1; toEnd = palabra.Length; break;
+                        case 'i': palabra = palabra.Replace("\"i", "i"); i = -1; toEnd = palabra.Length; break;
+                        case 'o': palabra = palabra.Replace("\"o", "o"); i = -1; toEnd = palabra.Length; break;
+                        case 'u': palabra = palabra.Replace("\"u", "u"); i = -1; toEnd = palabra.Length; break;
+                    }
                 }
+                
             }
             return palabra;
         }
@@ -96,9 +107,17 @@ namespace Naive_Bayes.Models
         {
             char[] caracteresInvalidos = { '-', '*', '+', '.', ',', '!', ')', ':', '(', '"', ';' };
             foreach (char caracter in caracteresInvalidos)
-                if (palabra.Contains(caracter))
-                    palabra = palabra.Replace(caracter.ToString(), "");
+                //if (palabra.Contains(caracter))
+                palabra = palabra.Replace(caracter.ToString(), "");
             return palabra;
+        }
+
+        public static string QuitarDeterminantes(string oracion)
+        {
+            string[] Articulos = { " el ", " la ", " los ", " las ", " lo ", " un ", " una ", " unos ", " unas ", " mi ", " su ", " de ", " suyo ", " mio ", " al ", " del " };
+            foreach (string articulo in Articulos)
+                oracion = oracion.Replace(articulo, " ");
+            return oracion;
         }
     }
 }

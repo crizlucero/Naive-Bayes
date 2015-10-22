@@ -35,13 +35,27 @@ namespace Naive_Bayes
             this.Entrenar();
         }
 
-        private void btnEntrenar_Click(object sender, RoutedEventArgs e)
+        private void btnConvertir_Click(object sender, RoutedEventArgs e)
         {
-            this.Entrenar();
+            string path = @"C:\archivos\tuits.arff";
+            string cuerpo = "@relation tuits\n@attribute 'content' string\n@attribute 'pos' numeric\n@attribute 'neg' numeric\n@attribute 'query' string\n@data \n";
+            foreach (Tuit tuit in this.tuits)
+            {
+                cuerpo += "\"" + Clasificador.corregirPalabra(tuit.contenido) + "\"," + tuit.positivo + "," + tuit.negativo + ",\"" + tuit.empresa + "\"\n";
+            }
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+            }
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.Write(cuerpo);
+                tw.Close();
+            }
         }
-        private void Entrenar(){
+        private void Entrenar()
+        {
             int count = 0;
-            this.tuits.Clear();
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
             foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
                 for (int i = 1; i < ws.Rows.Length; i++)
@@ -64,12 +78,12 @@ namespace Naive_Bayes
             //this.clasPositivo.contarPalabras(this.tuits);
             //this.clasNegativo.contarPalabras(this.tuits);
             this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras;
-            //this.quitarDupicados();
+            //this.quitarDuplicados();
         }
         /// <summary>
         /// 
         /// </summary>
-        private void quitarDupicados()
+        private void quitarDuplicados()
         {
             Dictionary<string, int> auxP = new Dictionary<string, int>(this.clasPositivo.contador);
             foreach (string val in auxP.Keys)
@@ -85,10 +99,10 @@ namespace Naive_Bayes
             Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador);
 
             //Positivos
-            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo);//, Positivos);
+            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo);
             this.lblPositivo.Content = probabilidadPositiva;
             //Negativos
-            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo);//, Negativos);
+            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo);
             this.lblNegativo.Content = probabilidadNegativa;
             this.lblSeleccion.Content = probabilidadPositiva > probabilidadNegativa ? "Positivo" : "Negativo";
         }
@@ -112,12 +126,16 @@ namespace Naive_Bayes
             }
             return valores;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clas"></param>
+        /// <returns></returns>
         private double ObtenerProbabilidades(Clasificador clas)
         {
             double probabilidad = (Convert.ToDouble(clas.totalPalabras) / Convert.ToDouble(this.totalPalabras));
             string word = "";
-            foreach (string palabra in this.txtTuit.Text.Trim().Split(' '))
+            foreach (string palabra in this.txtTuit.Text.Trim().ToLower().Split(' '))
             {
                 word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
                 if (clas.contador.ContainsKey(word))
@@ -127,7 +145,12 @@ namespace Naive_Bayes
             }
             return probabilidad;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texto"></param>
+        /// <param name="palabra"></param>
+        /// <returns></returns>
         private bool ContienePalabra(string texto, string palabra)
         {
             foreach (string frag in texto.Split(' '))
