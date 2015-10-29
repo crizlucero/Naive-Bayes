@@ -28,11 +28,15 @@ namespace Naive_Bayes
         private void CargarDatos(string[] Resultados)
         {
             this.lblTotal.Content = Resultados[0];
-            this.lblTotalPositivos.Content = Resultados[1];
+            this.lblPP.Content = Resultados[1];
+            this.lblPN.Content = Resultados[2];
+            this.lblNN.Content = Resultados[3];
+            this.lblNP.Content = Resultados[4];
+            /*this.lblTotalPositivos.Content = Resultados[1];
             this.lblProbabilidadPositivos.Content = Resultados[2];
             this.lblTotalNegativos.Content = Resultados[3];
-            this.lblProbabilidadNegativos.Content = Resultados[4];
-            this.lblTiempoEjecucion.Content = Resultados[5];
+            this.lblProbabilidadNegativos.Content = Resultados[4];*/
+            this.lblTiempoEjecucion.Content = Resultados[5] + " Segundos";
         }
     }
 }
