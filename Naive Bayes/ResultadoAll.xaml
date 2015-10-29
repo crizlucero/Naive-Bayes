@@ -1,0 +1,38 @@
+﻿<Window x:Class="Naive_Bayes.ResultadoAll"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Naive_Bayes"
+        mc:Ignorable="d"
+        Title="ResultadoAll" Height="300" Width="368.146">
+    <Window.Resources>
+        <ResourceDictionary Source="ResultadoStyle.xaml"></ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Content="Total de tuits"/>
+        <Label Content="Tuits Positivos" Grid.Row="1"/>
+        <Label Content="Probabilidad de tuits Positivos" Grid.Row="2"/>
+        <Label Content="Tuits Negativos" Grid.Row="3"/>
+        <Label Content="Probabilidad de tuits Negativos" Grid.Row="4"/>
+        <Label Content="Tiempo de ejecución" Grid.Row="5"/>
+        <Label Name="lblTotal" Content="0" Grid.Column="1"/>
+        <Label Name="lblTotalPositivos" Content="0" Grid.Column="1" Grid.Row="1"/>
+        <Label Name="lblProbabilidadPositivos" Content="0" Grid.Column="1" Grid.Row="2"/>
+        <Label Name="lblTotalNegativos" Content="0" Grid.Column="1" Grid.Row="3"/>
+        <Label Name="lblProbabilidadNegativos" Content="0" Grid.Column="1" Grid.Row="4"/>
+        <Label Name="lblTiempoEjecucion" Content="0.0 Segundos" Grid.Column="1" Grid.Row="5"/>
+    </Grid>
+</Window>

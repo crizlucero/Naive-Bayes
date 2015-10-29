@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Naive_Bayes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="240" Width="374">
+        Title="MainWindow" Height="266.667" Width="412.667">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -17,15 +17,18 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Button Content="Convertir a .arff" Width="95" Height="25" Name="btnConvertir" Click="btnConvertir_Click"/>
         <Button Content="Clasificar" Width="75" Height="25" Grid.Column="1" Name="btnClasificar" Click="btnClasificar_Click"/>
-        <Label Content="Tuit" Grid.Row="1"/>
-        <TextBox Name="txtTuit" Grid.Column="1" Grid.Row="1" Margin="5"/>
-        <Label Content="Clasificación Positivos:" Grid.Row="2"/>
-        <Label Name="lblPositivo" Grid.Row="2" Grid.Column="1"/>
-        <Label Content="Clasificación Negativo:" Grid.Row="3"/>
-        <Label Name="lblNegativo" Grid.Row="3" Grid.Column="1"/>
-        <Label Name="lblSeleccion" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <RadioButton Name="radAll" Content="Todos los tuits" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="True" Checked="radAll_Checked"/>
+        <RadioButton Name="radSingle" Content="Sólo un tuit" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="radSingle_Checked"/>
+        <Label Content="Tuit" Grid.Row="2"/>
+        <TextBox Name="txtTuit" Grid.Column="1" Grid.Row="2" Margin="5" IsEnabled="False"/>
+        <Label Content="Clasificación Positivos:" Grid.Row="3"/>
+        <Label Name="lblPositivo" Grid.Row="3" Grid.Column="1"/>
+        <Label Content="Clasificación Negativo:" Grid.Row="4"/>
+        <Label Name="lblNegativo" Grid.Row="4" Grid.Column="1"/>
+        <Label Name="lblSeleccion" Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </Window>

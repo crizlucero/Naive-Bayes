@@ -16,6 +16,7 @@ using Naive_Bayes.Models;
 using CsvHelper;
 using System.IO;
 using Excel;
+using System.Diagnostics;
 
 namespace Naive_Bayes
 {
@@ -34,7 +35,11 @@ namespace Naive_Bayes
             InitializeComponent();
             this.Entrenar();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnConvertir_Click(object sender, RoutedEventArgs e)
         {
             string path = @"C:\archivos\tuits.arff";
@@ -53,6 +58,9 @@ namespace Naive_Bayes
                 tw.Close();
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         private void Entrenar()
         {
             int count = 0;
@@ -92,27 +100,71 @@ namespace Naive_Bayes
             this.clasPositivo.totalPalabras = this.clasPositivo.contador.Count + this.clasNegativo.contador.Count;
             this.clasNegativo.totalPalabras = this.clasPositivo.totalPalabras;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnClasificar_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador);
-            Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador);
+            if (this.radAll.IsChecked.Value)
+            {
+                double probabilidadPositiva = 0.0;
+                double probabilidadNegativa = 0.0;
+                int totalPositivos = 0;
+                int totalNegativos = 0;
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                foreach (Tuit tuit in this.tuits)
+                {
+                    //Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador, tuit.contenido);
+                    //Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador, tuit.contenido);
 
-            //Positivos
-            double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo);
-            this.lblPositivo.Content = probabilidadPositiva;
-            //Negativos
-            double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo);
-            this.lblNegativo.Content = probabilidadNegativa;
-            this.lblSeleccion.Content = probabilidadPositiva > probabilidadNegativa ? "Positivo" : "Negativo";
+                    //Positivos
+                    if (tuit.positivo == "1")
+                    {
+                        probabilidadPositiva += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido);
+                        totalPositivos++;
+                    }
+                    else
+                    {//Negativos
+                        probabilidadNegativa += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido);
+                        totalNegativos++;
+                    }
+                }
+
+                watch.Stop();
+                string[] Resultados = { this.tuits.Count.ToString(), totalPositivos.ToString(), probabilidadPositiva.ToString(), totalNegativos.ToString(), probabilidadNegativa.ToString(), watch.Elapsed.ToString() };
+                ResultadoAll win = new ResultadoAll(Resultados);
+                win.Show();
+            }
+            else
+            {
+                //Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador,this.txtTuit.Text);
+                //Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador, this.txtTuit.Text);
+
+                //Positivos
+                double probabilidadPositiva = this.ObtenerProbabilidades(this.clasPositivo, this.txtTuit.Text);
+                this.lblPositivo.Content = probabilidadPositiva;
+                //Negativos
+                double probabilidadNegativa = this.ObtenerProbabilidades(this.clasNegativo, this.txtTuit.Text);
+                this.lblNegativo.Content = probabilidadNegativa;
+                this.lblSeleccion.Content = probabilidadPositiva > probabilidadNegativa ? "Positivo" : "Negativo";
+            }
         }
-        private Dictionary<string, int> ObtenerValores(Dictionary<string, int> clasificacion)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clasificacion"></param>
+        /// <param name="Cadena"></param>
+        /// <returns></returns>
+        private Dictionary<string, int> ObtenerValores(Dictionary<string, int> clasificacion, string Cadena)
         {
             Dictionary<string, int> valores = new Dictionary<string, int>();
             //Positivos
             foreach (string palabra in clasificacion.Keys)
             {
-                if (this.ContienePalabra(this.txtTuit.Text, palabra))
+                if (this.ContienePalabra(Cadena, palabra))
                 {
                     if (valores.ContainsKey(palabra))
                     {
@@ -131,11 +183,11 @@ namespace Naive_Bayes
         /// </summary>
         /// <param name="clas"></param>
         /// <returns></returns>
-        private double ObtenerProbabilidades(Clasificador clas)
+        private double ObtenerProbabilidades(Clasificador clas, string Cadena)
         {
             double probabilidad = (Convert.ToDouble(clas.totalPalabras) / Convert.ToDouble(this.totalPalabras));
             string word = "";
-            foreach (string palabra in this.txtTuit.Text.Trim().ToLower().Split(' '))
+            foreach (string palabra in Cadena.Trim().ToLower().Split(' '))
             {
                 word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
                 if (clas.contador.ContainsKey(word))
@@ -159,6 +211,28 @@ namespace Naive_Bayes
                     return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void radSingle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.txtTuit.IsEnabled = true;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void radAll_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.txtTuit.IsEnabled = false;
+            }
+            catch { }
         }
     }
 }
