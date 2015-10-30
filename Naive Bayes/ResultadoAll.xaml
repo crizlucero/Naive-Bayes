@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Naive_Bayes"
         mc:Ignorable="d"
-        Title="ResultadoAll" Height="344.647" Width="515.111">
+        Title="ResultadoAll" Height="383.968" Width="515.111">
     <Window.Resources>
         <ResourceDictionary Source="ResultadoStyle.xaml"></ResourceDictionary>
     </Window.Resources>
@@ -16,15 +16,38 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="1*"/>
-            <!--<RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>-->
         </Grid.RowDefinitions>
         <Label Content="Total de tuits"/>
         <Label Name="lblTotal" Content="0" Grid.Column="1"/>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Tuits Positivos" />
+            <Label Name="lblTotalTuitsPositivos" Grid.Column="1" />
+            <Label Content="Palabras Positivas" Grid.Column="2"/>
+            <Label Name="lblTotalPalabrasPositivas" Grid.Column="3" />
+        </Grid>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Tuits Negativos" />
+            <Label Name="lblTotalTuitsNegativos" Grid.Column="1" />
+            <Label Content="Palabras Negativas" Grid.Column="2"/>
+            <Label Name="lblTotalPalabrasNegativas" Grid.Column="3" />
+        </Grid>
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="121*"/>
                 <ColumnDefinition Width="208*"/>
@@ -48,28 +71,55 @@
                 <Label Content="Negativo" />
             </Border>
             <Border BorderBrush="Black" BorderThickness="1,1,1,1" Grid.Column="1" Grid.Row="1">
-                <Label Name="lblPP" Content="PP" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Name="lblPP" Content="PP" />
+                    <Label Name="lblPPPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblTotalPP" Content="tuits" Grid.Row="2" />
+                </Grid>
             </Border>
             <Border BorderBrush="Black" BorderThickness="0,1,0,1" Grid.Column="2" Grid.Row="1">
-                <Label Name="lblPN" Content="PN" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Name="lblPN" Content="PN" />
+                    <Label Name="lblPNPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblTotalPN" Content="tuits" Grid.Row="2" />
+                </Grid>
             </Border>
             <Border BorderBrush="Black" BorderThickness="1,0,1,0" Grid.Row="2" Grid.Column="1">
-                <Label Name="lblNP" Content="NP" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Name="lblNP" Content="NP" />
+                    <Label Name="lblNPPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblTotalNP" Content="tuits" Grid.Row="2" />
+                </Grid>
             </Border>
             <Border BorderBrush="Black" BorderThickness="0,0,0,0" Grid.Row="2" Grid.Column="2">
-                <Label Name="lblNN" Content="NN" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Name="lblNN" Content="NN" />
+                    <Label Name="lblNNPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblTotalNN" Content="tuits" Grid.Row="2" />
+                </Grid>
             </Border>
         </Grid>
-        <!--<Label Content="Tuits Positivos" Grid.Row="1"/>
-        <Label Content="Probabilidad de tuits Positivos" Grid.Row="2"/>
-        <Label Content="Tuits Negativos" Grid.Row="3"/>
-        <Label Content="Probabilidad de tuits Negativos" Grid.Row="4"/>-->
         <Label Content="Tiempo de ejecución" Grid.Row="5"/>
-
-        <!--<Label Name="lblTotalPositivos" Content="0" Grid.Column="1" Grid.Row="1"/>
-        <Label Name="lblProbabilidadPositivos" Content="0" Grid.Column="1" Grid.Row="2"/>
-        <Label Name="lblTotalNegativos" Content="0" Grid.Column="1" Grid.Row="3"/>
-        <Label Name="lblProbabilidadNegativos" Content="0" Grid.Column="1" Grid.Row="4"/>-->
         <Label Name="lblTiempoEjecucion" Content="0.0 Segundos" Grid.Column="1" Grid.Row="5"/>
     </Grid>
 </Window>

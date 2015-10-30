@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Naive_Bayes.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,24 +20,29 @@ namespace Naive_Bayes
     /// </summary>
     public partial class ResultadoAll
     {
-        public ResultadoAll(string[] Resultados)
+
+        public ResultadoAll(ResultadoMultiple Resultados)
         {
             InitializeComponent();
             this.CargarDatos(Resultados);
         }
 
-        private void CargarDatos(string[] Resultados)
+        private void CargarDatos(ResultadoMultiple Resultados)
         {
-            this.lblTotal.Content = Resultados[0];
-            this.lblPP.Content = Resultados[1];
-            this.lblPN.Content = Resultados[2];
-            this.lblNN.Content = Resultados[3];
-            this.lblNP.Content = Resultados[4];
-            /*this.lblTotalPositivos.Content = Resultados[1];
-            this.lblProbabilidadPositivos.Content = Resultados[2];
-            this.lblTotalNegativos.Content = Resultados[3];
-            this.lblProbabilidadNegativos.Content = Resultados[4];*/
-            this.lblTiempoEjecucion.Content = Resultados[5] + " Segundos";
+            this.lblTotal.Content = Resultados.TotalTuits;
+            this.lblTotalTuitsPositivos.Content = Resultados.TotalTuitsPositivos;
+            this.lblTotalPalabrasPositivas.Content = Resultados.TotalPalabrasPositivas;
+            this.lblTotalPalabrasNegativas.Content = Resultados.TotalPalabrasNegativas;
+            this.lblTotalTuitsNegativos.Content = Resultados.TotalTuitsNegativos;
+            this.lblPP.Content = Resultados.ProbabilidadPositivaP;
+            this.lblPN.Content = Resultados.ProbabilidadPositivaN;
+            this.lblTotalPP.Content = Resultados.TotalPositivaP;
+            this.lblTotalPN.Content = Resultados.TotalPositivaN;
+            this.lblNN.Content = Resultados.ProbabilidadNegativaN;
+            this.lblNP.Content = Resultados.ProbabilidadNegativaP;
+            this.lblTotalNP.Content = Resultados.TotalNegativaP;
+            this.lblTotalNN.Content = Resultados.TotalNegativaN;
+            this.lblTiempoEjecucion.Content = Resultados.Duracion + " Segundos";
         }
     }
 }

@@ -78,8 +78,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\ResultadoMultiple.cs" />
+    <Compile Include="Models\ResultadoSencillo.cs" />
     <Compile Include="ResultadoAll.xaml.cs">
       <DependentUpon>ResultadoAll.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResultadoSingle.xaml.cs">
+      <DependentUpon>ResultadoSingle.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +100,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ResultadoAll.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResultadoSingle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
