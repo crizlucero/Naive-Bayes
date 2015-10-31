@@ -78,7 +78,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Name="lblPP" Content="PP" />
-                    <Label Name="lblPPPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblPPPercent" Content="" Grid.Row="1"/>
                     <Label Name="lblTotalPP" Content="tuits" Grid.Row="2" />
                 </Grid>
             </Border>
@@ -90,7 +90,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Name="lblPN" Content="PN" />
-                    <Label Name="lblPNPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblPNPercent" Content="" Grid.Row="1"/>
                     <Label Name="lblTotalPN" Content="tuits" Grid.Row="2" />
                 </Grid>
             </Border>
@@ -102,7 +102,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Name="lblNP" Content="NP" />
-                    <Label Name="lblNPPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblNPPercent" Content="" Grid.Row="1"/>
                     <Label Name="lblTotalNP" Content="tuits" Grid.Row="2" />
                 </Grid>
             </Border>
@@ -114,7 +114,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Name="lblNN" Content="NN" />
-                    <Label Name="lblNNPercent" Content="%" Grid.Row="1"/>
+                    <Label Name="lblNNPercent" Content="" Grid.Row="1"/>
                     <Label Name="lblTotalNN" Content="tuits" Grid.Row="2" />
                 </Grid>
             </Border>

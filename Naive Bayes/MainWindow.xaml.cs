@@ -208,26 +208,26 @@ namespace Naive_Bayes
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="clas"></param>
+        /// <param name="clasificador"></param>
         /// <param name="Cadena"></param>
         /// <param name="contadorClasificador"></param>
         /// <param name="ContadorPalabras"></param>
         /// <returns></returns>
-        private double ObtenerProbabilidades(Clasificador clas, string Cadena, ref int contadorClasificador, ref int ContadorPalabras)
+        private double ObtenerProbabilidades(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras)
         {
-            double probabilidad = (Convert.ToDouble(clas.totalPalabras) / Convert.ToDouble(this.totalPalabras));
+            double probabilidad = (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble(this.totalPalabras));
             string word = "";
             foreach (string palabra in Cadena.Trim().ToLower().Split(' '))
             {
                 ContadorPalabras++;
                 word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
-                if (clas.contador.ContainsKey(word))
+                if (clasificador.contador.ContainsKey(word))
                 {
-                    probabilidad *= Convert.ToDouble((clas.contador[word] + 1)) / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
+                    probabilidad *= Convert.ToDouble((clasificador.contador[word] + 1)) / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
                     contadorClasificador++;
                 }
                 else
-                    probabilidad *= 1.0 / Convert.ToDouble((clas.totalPalabras + this.totalPalabras));
+                    probabilidad *= 1.0 / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
             }
             return probabilidad;
         }
