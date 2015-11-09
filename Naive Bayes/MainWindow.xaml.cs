@@ -61,6 +61,8 @@ namespace Naive_Bayes
         private void Entrenar()
         {
             int count = 0;
+            int countP = 0;
+            int countN = 0;
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
             foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
                 for (int i = 1; i < ws.Rows.Length; i++)
@@ -75,8 +77,16 @@ namespace Naive_Bayes
             {
                 if (count % 13 == 0)
                 {
-                    this.clasPositivo.contarPalabras(tuit);
-                    this.clasNegativo.contarPalabras(tuit);
+                    if (tuit.positivo == "1" && countP < 50)
+                    {
+                        this.clasPositivo.contarPalabras(tuit);
+                        countP++;
+                    }
+                    if (tuit.negativo == "1" && countN < 50)
+                    {
+                        this.clasNegativo.contarPalabras(tuit);
+                        countN++;
+                    }
                 }
                 count++;
             }
