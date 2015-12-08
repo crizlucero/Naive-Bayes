@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Naive_Bayes.Models
+﻿namespace Naive_Bayes.Models
 {
     public class ResultadoMultiple : ResultadoSencillo
     {
@@ -17,5 +11,9 @@ namespace Naive_Bayes.Models
         public double ProbabilidadPositivaN { get; set; }
         public int TotalTuitsPositivos { get; set; }
         public int TotalTuitsNegativos { get; set; }
+        public int TuitsPositivosN {get;set;}
+        public int TuitsPositivosP {get;set;}
+        public int TuitsNegativosN {get;set;}
+        public int TuitsNegativosP { get; set; }
     }
 }

@@ -1,17 +1,4 @@
 ﻿using Naive_Bayes.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Naive_Bayes
 {
@@ -42,6 +29,10 @@ namespace Naive_Bayes
             this.lblNP.Content = Resultados.ProbabilidadNegativaP;
             this.lblTotalNP.Content = Resultados.TotalNegativaP;
             this.lblTotalNN.Content = Resultados.TotalNegativaN;
+            this.lblTotalPN.Content = Resultados.TuitsPositivosN;
+            this.lblTotalPP.Content = Resultados.TuitsPositivosP;
+            this.lblTotalNN.Content = Resultados.TuitsNegativosN;
+            this.lblTotalNP.Content = Resultados.TuitsNegativosP;
             this.lblTiempoEjecucion.Content = Resultados.Duracion + " Segundos";
         }
     }

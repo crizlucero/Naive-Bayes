@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Naive_Bayes.Models;
 using System.IO;
 using Excel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Naive_Bayes
 {
@@ -75,7 +64,7 @@ namespace Naive_Bayes
                     });
             foreach (Tuit tuit in this.tuits)
             {
-                if (count % 13 == 0)
+                if (count % 512 == 0)
                 {
                     if (tuit.positivo == "1" && countP < 50)
                     {
@@ -126,6 +115,14 @@ namespace Naive_Bayes
             int totalTuitsNegativos = 0;
             int totalPalabrasPositivas = 0;
             int totalPalabrasNegativas = 0;
+            double ProbabilidadPositivosP = 0;
+            double ProbabilidadPositivosN = 0;
+            double ProbabilidadNegativosP = 0;
+            double ProbabilidadNegativosN = 0;
+            int tuitsPositivosP = 0;
+            int tuitsPositivosN = 0;
+            int tuitsNegativosP = 0;
+            int tuitsNegativosN = 0;
             Stopwatch watch = new Stopwatch();
             watch.Start();
             if (this.radAll.IsChecked.Value)
@@ -139,14 +136,18 @@ namespace Naive_Bayes
                     //Positivos
                     if (tuit.positivo == "1")
                     {
-                        probabilidadPositivaP += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas);
-                        probabilidadNegativaP += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas);
+                        probabilidadPositivaP += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                        probabilidadNegativaP += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas, ref ProbabilidadNegativosP);
+                        if (ProbabilidadPositivosP >= ProbabilidadNegativosP) ++tuitsPositivosP;
+                        else ++tuitsNegativosP;
                         totalTuitsPositivos++;
                     }
                     else
                     {//Negativos
-                        probabilidadNegativaN += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas);
-                        probabilidadPositivaN += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas);
+                        probabilidadNegativaN += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                        probabilidadPositivaN += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas, ref ProbabilidadPositivosN);
+                        if (ProbabilidadNegativosN >= ProbabilidadPositivosN) ++tuitsNegativosN;
+                        else ++tuitsPositivosN;
                         totalTuitsNegativos++;
                     }
                 }
@@ -167,6 +168,10 @@ namespace Naive_Bayes
                     TotalPalabrasNegativas = totalPalabrasNegativas / 2,
                     TotalTuitsPositivos = totalTuitsPositivos,
                     TotalTuitsNegativos = totalTuitsNegativos,
+                    TuitsPositivosN = tuitsPositivosN,
+                    TuitsPositivosP = tuitsPositivosP,
+                    TuitsNegativosN = tuitsNegativosN,
+                    TuitsNegativosP = tuitsNegativosP,
                     Duracion = watch.Elapsed
                 };
                 ResultadoAll win = new ResultadoAll(Resultados);
@@ -178,10 +183,10 @@ namespace Naive_Bayes
                 //Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador, this.txtTuit.Text);
 
                 //Positivos
-                probabilidadPositivaP = this.ObtenerProbabilidades(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas);
+                probabilidadPositivaP = this.ObtenerProbabilidades(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
                 //this.lblPositivo.Content = probabilidadPositivaP;
                 //Negativos
-                probabilidadNegativaN = this.ObtenerProbabilidades(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas);
+                probabilidadNegativaN = this.ObtenerProbabilidades(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
                 watch.Stop();
                 /*this.lblNegativo.Content = probabilidadNegativaN;
                 this.lblSeleccion.Content = probabilidadPositivaP > probabilidadNegativaN ? "Positivo" : "Negativo";*/
@@ -223,7 +228,7 @@ namespace Naive_Bayes
         /// <param name="contadorClasificador"></param>
         /// <param name="ContadorPalabras"></param>
         /// <returns></returns>
-        private double ObtenerProbabilidades(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras)
+        private double ObtenerProbabilidades(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras, ref double probabilidadTuit)
         {
             double probabilidad = (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble(this.totalPalabras));
             string word = "";
@@ -239,6 +244,7 @@ namespace Naive_Bayes
                 else
                     probabilidad *= 1.0 / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
             }
+            probabilidadTuit = probabilidad;
             return probabilidad;
         }
         /// <summary>

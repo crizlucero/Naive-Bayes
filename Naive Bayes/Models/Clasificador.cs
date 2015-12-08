@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Naive_Bayes.Models
 {
@@ -57,6 +52,7 @@ namespace Naive_Bayes.Models
         /// <returns></returns>
         public static string corregirPalabra(string palabra)
         {
+            QuitarRepeticion(palabra);
             int toEnd = palabra.Length;
             for (int i = 0; i < toEnd - 1; i++)
             {
@@ -72,7 +68,8 @@ namespace Naive_Bayes.Models
                         case 'o': palabra = palabra.Replace("\'o", "o"); i = -1; toEnd = palabra.Length; break;
                         case 'u': palabra = palabra.Replace("\'u", "u"); i = -1; toEnd = palabra.Length; break;
                     }
-                }else if(palabra[i] == '\"' && i < toEnd - 1)
+                }
+                else if (palabra[i] == '\"' && i < toEnd - 1)
                 {
                     i++;
                     switch (palabra[i])
@@ -84,7 +81,7 @@ namespace Naive_Bayes.Models
                         case 'u': palabra = palabra.Replace("\"u", "u"); i = -1; toEnd = palabra.Length; break;
                     }
                 }
-                
+
             }
             return palabra;
         }
@@ -105,7 +102,7 @@ namespace Naive_Bayes.Models
         /// <returns></returns>
         public static string laContiene(string palabra)
         {
-            char[] caracteresInvalidos = { '-', '*', '+', '.', ',', '!', ')', ':', '(', '"', ';' };
+            char[] caracteresInvalidos = { '-', '*', '+', '.', ',', '!', ')', ':', '(', '"', ';', '#', '@' };
             foreach (char caracter in caracteresInvalidos)
                 //if (palabra.Contains(caracter))
                 palabra = palabra.Replace(caracter.ToString(), "");
@@ -119,6 +116,26 @@ namespace Naive_Bayes.Models
                 oracion = oracion.Replace(articulo, " ");
             return oracion;
         }
+
+        public static string QuitarRepeticion(string palabra)
+        {
+            string nuevaPalabra = "";
+            for (int i = 0; i < palabra.Length - 2; i++)
+            {
+                if (palabra[i] == palabra[i + 1] && (palabra[i + 2] != 'c' || palabra[i + 2] != 'r' || palabra[i + 2] != 'l'))
+                {
+                    i++;
+                    nuevaPalabra += palabra[i + 1];
+                }
+                else
+                {
+                    nuevaPalabra += palabra[i];
+                }
+            }
+            return nuevaPalabra;
+        }
+
+
     }
 }
 
