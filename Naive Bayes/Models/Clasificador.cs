@@ -108,7 +108,11 @@ namespace Naive_Bayes.Models
                 palabra = palabra.Replace(caracter.ToString(), "");
             return palabra;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oracion"></param>
+        /// <returns></returns>
         public static string QuitarDeterminantes(string oracion)
         {
             string[] Articulos = { " el ", " la ", " los ", " las ", " lo ", " un ", " una ", " unos ", " unas ", " mi ", " su ", " de ", " suyo ", " mio ", " al ", " del " };
@@ -116,22 +120,27 @@ namespace Naive_Bayes.Models
                 oracion = oracion.Replace(articulo, " ");
             return oracion;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="palabra"></param>
+        /// <returns></returns>
         public static string QuitarRepeticion(string palabra)
         {
             string nuevaPalabra = "";
             for (int i = 0; i < palabra.Length - 2; i++)
             {
-                if (palabra[i] == palabra[i + 1] && (palabra[i + 2] != 'c' || palabra[i + 2] != 'r' || palabra[i + 2] != 'l'))
+                if (palabra[i] == palabra[i + 1] && (palabra[i + 1] != 'c' || palabra[i + 1] != 'r' || palabra[i + 1] != 'l'))
                 {
-                    i++;
                     nuevaPalabra += palabra[i + 1];
+                    if (palabra[i + 2] == 'c' || palabra[i + 2] == 'r' || palabra[i + 2] == 'l')
+                        ++i;
+                    ++i;
                 }
                 else
-                {
                     nuevaPalabra += palabra[i];
-                }
             }
+
             return nuevaPalabra;
         }
 

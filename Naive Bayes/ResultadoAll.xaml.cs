@@ -29,6 +29,10 @@ namespace Naive_Bayes
             this.lblNP.Content = Resultados.ProbabilidadNegativaP;
             this.lblTotalNP.Content = Resultados.TotalNegativaP;
             this.lblTotalNN.Content = Resultados.TotalNegativaN;
+            this.lblPPPercent.Content = (((Resultados.TuitsPositivosP*1.0) / (Resultados.TotalTuitsPositivos*1.0))*100.0).ToString("#.##") + " %";
+            this.lblNPPercent.Content = (((Resultados.TuitsNegativosP*1.0) / (Resultados.TotalTuitsPositivos*1.0))*100.0).ToString("#.##") + " %";
+            this.lblPNPercent.Content = (((Resultados.TuitsPositivosN*1.0) / (Resultados.TotalTuitsNegativos*1.0))*100.0).ToString("#.##") + " %";
+            this.lblNNPercent.Content = (((Resultados.TuitsNegativosN*1.0) / (Resultados.TotalTuitsNegativos*1.0))*100.0).ToString("#.##") + " %";
             this.lblTotalPN.Content = Resultados.TuitsPositivosN;
             this.lblTotalPP.Content = Resultados.TuitsPositivosP;
             this.lblTotalNN.Content = Resultados.TuitsNegativosN;

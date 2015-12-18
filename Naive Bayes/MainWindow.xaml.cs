@@ -64,7 +64,7 @@ namespace Naive_Bayes
                     });
             foreach (Tuit tuit in this.tuits)
             {
-                if (count % 512 == 0)
+                if (count % 1024 == 0)
                 {
                     if (tuit.positivo == "1" && countP < 50)
                     {
