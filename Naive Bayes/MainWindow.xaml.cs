@@ -53,7 +53,7 @@ namespace Naive_Bayes
             int countP = 0;
             int countN = 0;
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
-            foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
+            foreach (var ws in Workbook.Worksheets(@"..\..\Docs\twitters-spanish-12k.xlsx"))
                 for (int i = 1; i < ws.Rows.Length; i++)
                     this.tuits.Add(new Tuit()
                     {
