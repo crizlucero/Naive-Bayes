@@ -8,6 +8,7 @@ namespace Naive_Bayes.Models
         public Dictionary<string, int> contador { get; set; }
         public int totalPalabras { get; set; }
         public int totalTuits { get; set; }
+        public int totalPalabrasBigram { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -22,12 +23,13 @@ namespace Naive_Bayes.Models
         /// 
         /// </summary>
         /// <param name="tuits"></param>
-        public void contarPalabras(Tuit tuit)
+        public void contarPalabrasUnigram(Tuit tuit)
         {
             //foreach (Tuit tuit in tuits)
             //{
             this.totalTuits++;
             //tuit.contenido = QuitarDeterminantes(tuit.contenido.ToLower());
+            this.contador.Clear();
             foreach (string palabra in tuit.contenido.ToLower().Split(' '))
             {
                 if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
@@ -44,6 +46,42 @@ namespace Naive_Bayes.Models
                 }
             }
             //}
+        }
+
+        public void contarPalabrasBigram(Tuit tuit)
+        {
+            this.totalTuits++;
+            this.contador.Clear();
+            //tuit.contenido = QuitarDeterminantes(tuit.contenido.ToLower());
+            string[] palabra = tuit.contenido.ToLower().Split(' ');
+            for (int i = 0; i < palabra.Length - 1; i += 2)
+            {
+                if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
+                {
+                    this.totalPalabras++;
+                    string word = laContiene(palabra[i].Trim());
+                    if (i != 0 && i != palabra.Length - 1)
+                    {
+                        word = laContiene(palabra[i - 1].Trim()) + "|" + word;
+                    }
+                    else if (i == 0)
+                    {
+                        word = "<inicio>" + word;
+                    }
+                    else if (i == palabra.Length - 1)
+                    {
+                        word = word + "<fin>";
+                    }
+                    if (word.Length == 0)
+                        continue;
+                    word = corregirPalabra(word);
+                    if (this.contador.ContainsKey(word))
+                        this.contador[word]++;
+                    else
+                        this.contador.Add(word, 1);
+                }
+            }
+            totalPalabrasBigram += palabra.Length - 1;
         }
         /// <summary>
         /// 

@@ -6,6 +6,7 @@ using Naive_Bayes.Models;
 using System.IO;
 using Excel;
 using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace Naive_Bayes
 {
@@ -18,11 +19,12 @@ namespace Naive_Bayes
         private Clasificador clasPositivo = new Clasificador("positivo");
         private Clasificador clasNegativo = new Clasificador("negativo");
         private int totalPalabras { get; set; }
+        private int radSelected { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            this.Entrenar();
+            this.EntrenarUnigram();
         }
         /// <summary>
         /// 
@@ -31,11 +33,15 @@ namespace Naive_Bayes
         /// <param name="e"></param>
         private void btnConvertir_Click(object sender, RoutedEventArgs e)
         {
-            string path = @"C:\archivos\tuits.arff";
-            string cuerpo = "@relation tuits\n@attribute 'content' string\n@attribute 'pos' numeric\n@attribute 'neg' numeric\n@attribute 'query' string\n@data \n";
-            foreach (Tuit tuit in this.tuits)
-                cuerpo += "\"" + Clasificador.corregirPalabra(tuit.contenido) + "\"," + tuit.positivo + "," + tuit.negativo + ",\"" + tuit.empresa + "\"\n";
-
+            string path = @"C:\archivos\tuits1.arff";
+            //string cuerpo = "@relation tuits\n@attribute 'content' string\n@attribute 'pos' numeric\n@attribute 'neg' numeric\n@attribute 'query' string\n@data \n";
+            string cuerpo = "@relation tuits\n@attribute 'palabra' string\n@attribute 'cantidad' numeric\n@attribute 'class' {test_positivo, test_negativo}\n@data \n";
+            //foreach (Tuit tuit in this.tuits)
+            //  cuerpo += "\"" + Clasificador.corregirPalabra(tuit.contenido) + "\"," + tuit.positivo + "," + tuit.negativo + ",\"" + tuit.empresa + "\"\n";
+            foreach (KeyValuePair<string, int> palabra in this.clasPositivo.contador)
+                cuerpo += "\"" + palabra.Key + "\"," + palabra.Value + ",test_positivo\n";
+            foreach (KeyValuePair<string, int> palabra in this.clasNegativo.contador)
+                cuerpo += "\"" + palabra.Key + "\"," + palabra.Value + ",test_negativo\n";
             if (!File.Exists(path))
                 File.Create(path).Dispose();
             using (TextWriter tw = new StreamWriter(path))
@@ -47,11 +53,15 @@ namespace Naive_Bayes
         /// <summary>
         /// 
         /// </summary>
-        private void Entrenar()
+        private void EntrenarUnigram()
         {
             int count = 0;
             int countP = 0;
             int countN = 0;
+            this.clasPositivo.totalPalabras = 0;
+            this.clasPositivo.totalTuits = 0;
+            this.clasNegativo.totalPalabras = 0;
+            this.clasNegativo.totalTuits = 0;
             //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
             foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
                 for (int i = 1; i < ws.Rows.Length; i++)
@@ -64,26 +74,65 @@ namespace Naive_Bayes
                     });
             foreach (Tuit tuit in this.tuits)
             {
-                if (count % 1024 == 0)
+                //if (count % 512 == 0)
+                //{
+                if (tuit.positivo == "1" && countP < 150)
                 {
-                    if (tuit.positivo == "1" && countP < 50)
-                    {
-                        this.clasPositivo.contarPalabras(tuit);
-                        countP++;
-                    }
-                    if (tuit.negativo == "1" && countN < 50)
-                    {
-                        this.clasNegativo.contarPalabras(tuit);
-                        countN++;
-                    }
+                    this.clasPositivo.contarPalabrasUnigram(tuit);
+                    countP++;
                 }
+                if (tuit.negativo == "1" && countN < 150)
+                {
+                    this.clasNegativo.contarPalabrasUnigram(tuit);
+                    countN++;
+                }
+                //}
                 count++;
             }
-            //this.clasPositivo.contarPalabras(this.tuits);
-            //this.clasNegativo.contarPalabras(this.tuits);
             this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras;
             //this.quitarDuplicados();
         }
+
+        private void EntrenarBigram()
+        {
+            int count = 0;
+            int countP = 0;
+            int countN = 0;
+            this.clasPositivo.totalPalabras = 0;
+            this.clasPositivo.totalTuits = 0;
+            this.clasNegativo.totalPalabras = 0;
+            this.clasNegativo.totalTuits = 0;
+            //var reader = new StreamReader(File.OpenRead(@"C:\archivos\twitters-spanish-12k.csv"));
+            foreach (var ws in Workbook.Worksheets(@"C:\archivos\twitters-spanish-12k.xlsx"))
+                for (int i = 1; i < ws.Rows.Length; i++)
+                    this.tuits.Add(new Tuit()
+                    {
+                        contenido = ws.Rows[i].Cells[0].Text,
+                        positivo = ws.Rows[i].Cells[1].Text,
+                        negativo = ws.Rows[i].Cells[2].Text,
+                        empresa = ws.Rows[i].Cells[3].Text
+                    });
+            foreach (Tuit tuit in this.tuits)
+            {
+                //if (count % 512 == 0)
+                //{
+                if (tuit.positivo == "1" && countP < 150)
+                {
+                    this.clasPositivo.contarPalabrasBigram(tuit);
+                    countP++;
+                }
+                if (tuit.negativo == "1" && countN < 150)
+                {
+                    this.clasNegativo.contarPalabrasBigram(tuit);
+                    countN++;
+                }
+                //}
+                count++;
+            }
+            this.totalPalabras = this.clasPositivo.totalPalabras + this.clasNegativo.totalPalabras;
+            //this.quitarDuplicados();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -103,6 +152,7 @@ namespace Naive_Bayes
         /// <param name="e"></param>
         private void btnClasificar_Click(object sender, RoutedEventArgs e)
         {
+
             double probabilidadPositivaP = 0.0;
             double probabilidadPositivaN = 0.0;
             double probabilidadNegativaP = 0.0;
@@ -136,16 +186,44 @@ namespace Naive_Bayes
                     //Positivos
                     if (tuit.positivo == "1")
                     {
-                        probabilidadPositivaP += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
-                        probabilidadNegativaP += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas, ref ProbabilidadNegativosP);
+                        switch (radSelected)
+                        {
+                            case 0:
+                                probabilidadPositivaP += this.ObtenerProbabilidadesNB(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                                probabilidadNegativaP += this.ObtenerProbabilidadesNB(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas, ref ProbabilidadNegativosP);
+                                break;
+                            case 1:
+                                probabilidadPositivaP += this.ObtenerProbabilidadesLSU(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                                probabilidadNegativaP += this.ObtenerProbabilidadesLSU(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas, ref ProbabilidadNegativosP);
+                                break;
+                            case 2:
+                                probabilidadPositivaP += this.ObtenerProbabilidadesLSB(this.clasPositivo, tuit.contenido, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                                probabilidadNegativaP += this.ObtenerProbabilidadesLSB(this.clasNegativo, tuit.contenido, ref totalNegativosP, ref totalPalabrasPositivas, ref ProbabilidadNegativosP);
+                                break;
+                            case 3: break;
+                        }
                         if (ProbabilidadPositivosP >= ProbabilidadNegativosP) ++tuitsPositivosP;
                         else ++tuitsNegativosP;
                         totalTuitsPositivos++;
                     }
                     else
                     {//Negativos
-                        probabilidadNegativaN += this.ObtenerProbabilidades(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
-                        probabilidadPositivaN += this.ObtenerProbabilidades(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas, ref ProbabilidadPositivosN);
+                        switch (radSelected)
+                        {
+                            case 0:
+                                probabilidadNegativaN += this.ObtenerProbabilidadesNB(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                                probabilidadPositivaN += this.ObtenerProbabilidadesNB(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas, ref ProbabilidadPositivosN);
+                                break;
+                            case 1:
+                                probabilidadNegativaN += this.ObtenerProbabilidadesLSU(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                                probabilidadPositivaN += this.ObtenerProbabilidadesLSU(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas, ref ProbabilidadPositivosN);
+                                break;
+                            case 2:
+                                probabilidadNegativaN += this.ObtenerProbabilidadesLSB(this.clasNegativo, tuit.contenido, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                                probabilidadPositivaN += this.ObtenerProbabilidadesLSB(this.clasPositivo, tuit.contenido, ref totalPositivosN, ref totalPalabrasNegativas, ref ProbabilidadPositivosN);
+                                break;
+                            case 3: break;
+                        }
                         if (ProbabilidadNegativosN >= ProbabilidadPositivosN) ++tuitsNegativosN;
                         else ++tuitsPositivosN;
                         totalTuitsNegativos++;
@@ -181,12 +259,31 @@ namespace Naive_Bayes
             {
                 //Dictionary<string, int> Positivos = this.ObtenerValores(this.clasPositivo.contador,this.txtTuit.Text);
                 //Dictionary<string, int> Negativos = this.ObtenerValores(this.clasNegativo.contador, this.txtTuit.Text);
-
-                //Positivos
-                probabilidadPositivaP = this.ObtenerProbabilidades(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
-                //this.lblPositivo.Content = probabilidadPositivaP;
-                //Negativos
-                probabilidadNegativaN = this.ObtenerProbabilidades(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                switch (radSelected)
+                {
+                    case 0:
+                        //Positivos
+                        probabilidadPositivaP = this.ObtenerProbabilidadesNB(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                        //this.lblPositivo.Content = probabilidadPositivaP;
+                        //Negativos
+                        probabilidadNegativaN = this.ObtenerProbabilidadesNB(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                        break;
+                    case 1:
+                        //Positivos
+                        probabilidadPositivaP = this.ObtenerProbabilidadesLSU(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                        //this.lblPositivo.Content = probabilidadPositivaP;
+                        //Negativos
+                        probabilidadNegativaN = this.ObtenerProbabilidadesLSU(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                        break;
+                    case 2:
+                        //Positivos
+                        probabilidadPositivaP = this.ObtenerProbabilidadesLSB(this.clasPositivo, this.txtTuit.Text, ref totalPositivosP, ref totalPalabrasPositivas, ref ProbabilidadPositivosP);
+                        //this.lblPositivo.Content = probabilidadPositivaP;
+                        //Negativos
+                        probabilidadNegativaN = this.ObtenerProbabilidadesLSB(this.clasNegativo, this.txtTuit.Text, ref totalNegativosN, ref totalPalabrasNegativas, ref ProbabilidadNegativosN);
+                        break;
+                    case 3: break;
+                }
                 watch.Stop();
                 /*this.lblNegativo.Content = probabilidadNegativaN;
                 this.lblSeleccion.Content = probabilidadPositivaP > probabilidadNegativaN ? "Positivo" : "Negativo";*/
@@ -228,7 +325,7 @@ namespace Naive_Bayes
         /// <param name="contadorClasificador"></param>
         /// <param name="ContadorPalabras"></param>
         /// <returns></returns>
-        private double ObtenerProbabilidades(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras, ref double probabilidadTuit)
+        private double ObtenerProbabilidadesNB(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras, ref double probabilidadTuit)
         {
             double probabilidad = (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble(this.totalPalabras));
             string word = "";
@@ -247,6 +344,48 @@ namespace Naive_Bayes
             probabilidadTuit = probabilidad;
             return probabilidad;
         }
+
+        private double ObtenerProbabilidadesLSU(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras, ref double probabilidadTuit)
+        {
+            double probabilidad = (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble(this.totalPalabras));
+            string word = "";
+            foreach (string palabra in Cadena.Trim().ToLower().Split(' '))
+            {
+                ContadorPalabras++;
+                word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
+                if (clasificador.contador.ContainsKey(word))
+                {
+                    probabilidad *= Convert.ToDouble(clasificador.contador[word] + 1) * (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras)));
+                    contadorClasificador++;
+                }
+                else
+                    probabilidad *= 1.0 / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
+            }
+            probabilidadTuit = probabilidad;
+            return probabilidad;
+        }
+
+        private double ObtenerProbabilidadesLSB(Clasificador clasificador, string Cadena, ref int contadorClasificador, ref int ContadorPalabras, ref double probabilidadTuit)
+        {
+            double probabilidad = (Convert.ToDouble(clasificador.totalPalabras) / Convert.ToDouble(this.totalPalabras));
+            string word = "";
+            foreach (string palabra in Cadena.Trim().ToLower().Split(' '))
+            {
+                ContadorPalabras++;
+                word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
+                if (clasificador.contador.ContainsKey(word))
+                {
+                    probabilidad *= (Convert.ToDouble(clasificador.contador[word] + 1) / Convert.ToDouble(clasificador.totalPalabrasBigram + this.totalPalabras)) * Convert.ToDouble(clasificador.totalPalabrasBigram);
+                    contadorClasificador++;
+                }
+                else
+                    probabilidad *= 1.0 / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
+            }
+            probabilidadTuit = probabilidad;
+            return probabilidad;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -288,6 +427,17 @@ namespace Naive_Bayes
             if (e.Key == Key.Enter)
             {
                 this.btnClasificar_Click(null, null);
+            }
+        }
+
+        private void radNB_Checked(object sender, RoutedEventArgs e)
+        {
+            switch (((RadioButton)sender).Name)
+            {
+                case "radNB": radSelected = 0; EntrenarUnigram(); break;
+                case "radLSU": radSelected = 1; EntrenarUnigram(); break;
+                case "radLSB": radSelected = 2; EntrenarBigram(); break;
+                case "radSBO": radSelected = 3; break;
             }
         }
     }
