@@ -27,7 +27,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
+                <!--<ColumnDefinition/>-->
             </Grid.ColumnDefinitions>
             <RadioButton GroupName="radTipos" Name="radNB" IsChecked="True" Checked="radNB_Checked">
             <RadioButton.Content>
@@ -44,11 +44,11 @@
                     <TextBlock Text="Laplace Smoothing Bigramar" TextWrapping="Wrap"/>
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton GroupName="radTipos" Name="radSBO" Grid.Column="3" Checked="radNB_Checked">
+            <!--<RadioButton GroupName="radTipos" Name="radSBO" Grid.Column="3" Checked="radNB_Checked">
                 <RadioButton.Content>
                     <TextBlock Text="Stupid Backoff" TextWrapping="Wrap"/>
                 </RadioButton.Content>
-            </RadioButton>
+            </RadioButton>-->
         </Grid>
         <RadioButton Name="radAll" Content="Todos los tuits" Grid.Row="2" IsChecked="True" Checked="radAll_Checked"/>
         <RadioButton Name="radSingle" Content="Sólo un tuit" Grid.Row="2" Grid.Column="1" Checked="radSingle_Checked"/>

@@ -29,7 +29,6 @@ namespace Naive_Bayes.Models
             //{
             this.totalTuits++;
             //tuit.contenido = QuitarDeterminantes(tuit.contenido.ToLower());
-            this.contador.Clear();
             foreach (string palabra in tuit.contenido.ToLower().Split(' '))
             {
                 if ((tuit.positivo == "1" && tipo == "positivo") || (tuit.negativo == "1" && tipo == "negativo"))
@@ -51,7 +50,6 @@ namespace Naive_Bayes.Models
         public void contarPalabrasBigram(Tuit tuit)
         {
             this.totalTuits++;
-            this.contador.Clear();
             //tuit.contenido = QuitarDeterminantes(tuit.contenido.ToLower());
             string[] palabra = tuit.contenido.ToLower().Split(' ');
             for (int i = 0; i < palabra.Length - 1; i += 2)
@@ -66,11 +64,11 @@ namespace Naive_Bayes.Models
                     }
                     else if (i == 0)
                     {
-                        word = "<inicio>" + word;
+                        word = "<inicio>|" + word;
                     }
                     else if (i == palabra.Length - 1)
                     {
-                        word = word + "<fin>";
+                        word = word + "|<fin>";
                     }
                     if (word.Length == 0)
                         continue;

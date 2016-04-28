@@ -7,6 +7,7 @@ using System.IO;
 using Excel;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace Naive_Bayes
 {
@@ -72,6 +73,8 @@ namespace Naive_Bayes
                         negativo = ws.Rows[i].Cells[2].Text,
                         empresa = ws.Rows[i].Cells[3].Text
                     });
+            this.clasPositivo.contador.Clear();
+            this.clasNegativo.contador.Clear();
             foreach (Tuit tuit in this.tuits)
             {
                 //if (count % 512 == 0)
@@ -112,6 +115,8 @@ namespace Naive_Bayes
                         negativo = ws.Rows[i].Cells[2].Text,
                         empresa = ws.Rows[i].Cells[3].Text
                     });
+            this.clasPositivo.contador.Clear();
+            this.clasNegativo.contador.Clear();
             foreach (Tuit tuit in this.tuits)
             {
                 //if (count % 512 == 0)
@@ -373,10 +378,16 @@ namespace Naive_Bayes
             {
                 ContadorPalabras++;
                 word = Clasificador.corregirPalabra(Clasificador.laContiene(palabra.ToLower().Trim()));
-                if (clasificador.contador.ContainsKey(word))
+                if (clasificador.contador.Keys.Contains("|" + word))
                 {
-                    probabilidad *= (Convert.ToDouble(clasificador.contador[word] + 1) / Convert.ToDouble(clasificador.totalPalabrasBigram + this.totalPalabras)) * Convert.ToDouble(clasificador.totalPalabrasBigram);
+                    int suma = 0;
+                    foreach (var key in (from keys in clasificador.contador.Keys where keys.Contains(word) select keys).ToList())
+                    {
+                        suma += clasificador.contador[key];
+                    }
+                    probabilidad *= (Convert.ToDouble(suma + 1) / Convert.ToDouble(clasificador.totalPalabrasBigram + this.totalPalabras)) * Convert.ToDouble(clasificador.totalPalabrasBigram);
                     contadorClasificador++;
+
                 }
                 else
                     probabilidad *= 1.0 / Convert.ToDouble((clasificador.totalPalabras + this.totalPalabras));
